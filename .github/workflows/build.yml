@@ -11,9 +11,16 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-      - uses: gradle/actions/setup-gradle@v3
-      - name: Build
-        run: ./gradlew build
+      - name: List files
+        run: ls -la
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew || true
+      - name: Install Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.8'
+      - name: Build with Gradle
+        run: gradle build
       - name: Upload JAR
         uses: actions/upload-artifact@v4
         with:

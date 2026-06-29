@@ -11,16 +11,6 @@ repositories {
     mavenCentral()
 }
 
-loom {
-    splitEnvironmentSourceSets()
-    mods {
-        "karmas-client" {
-            sourceSet sourceSets.main
-            sourceSet sourceSets.client
-        }
-    }
-}
-
 dependencies {
     minecraft "com.mojang:minecraft:1.21.1"
     mappings "net.fabricmc:yarn:1.21.1+build.3:v2"
@@ -44,11 +34,4 @@ tasks.withType(JavaCompile).configureEach {
 java {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
-    withSourcesJar()
-}
-
-jar {
-    from("LICENSE") {
-        rename { "${it}_${archivesBaseName}" }
-    }
 }

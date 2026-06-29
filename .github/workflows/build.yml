@@ -11,8 +11,6 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-      - name: List files
-        run: ls -la
       - name: Make gradlew executable
         run: chmod +x ./gradlew || true
       - name: Install Gradle

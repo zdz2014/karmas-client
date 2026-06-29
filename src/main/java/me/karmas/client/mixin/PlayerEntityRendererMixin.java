@@ -12,7 +12,6 @@ import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Environment(EnvType.CLIENT)
@@ -27,22 +26,16 @@ public abstract class PlayerEntityRendererMixin {
     private void karmas$prefixNametag(PlayerEntity player, Text text,
                                       MatrixStack matrices,
                                       VertexConsumerProvider vertexConsumers,
-                                      int light, float tickDelta,
-                                      CallbackInfo ci) {
+                                      int light, CallbackInfo ci) {
         ci.cancel();
 
         MutableText prefix = Text.literal("Ka ")
                 .setStyle(Style.EMPTY.withColor(0xB0C4DE));
         MutableText combined = prefix.append(text.copy());
 
-        net.minecraft.client.MinecraftClient mc =
-                net.minecraft.client.MinecraftClient.getInstance();
-        if (mc.player == null) return;
-
-        net.minecraft.client.render.entity.EntityRenderer renderer =
-                mc.getEntityRenderDispatcher().getRenderer(player);
-        if (renderer != null) {
-            renderer.render(player, 0, tickDelta, matrices, vertexConsumers, light);
-        }
+        net.minecraft.client.MinecraftClient.getInstance()
+                .getEntityRenderDispatcher()
+                .getRenderer(player)
+                .renderLabelIfPresent(player, combined, matrices, vertexConsumers, light);
     }
 }

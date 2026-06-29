@@ -11,31 +11,23 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Environment(EnvType.CLIENT)
 @Mixin(PlayerEntityRenderer.class)
 public abstract class PlayerEntityRendererMixin {
 
-    @Inject(
+    @ModifyArg(
         method = "renderLabelIfPresent",
-        at = @At("HEAD"),
-        cancellable = true
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/client/render/entity/EntityRenderer;renderLabelIfPresent(Lnet/minecraft/entity/Entity;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IF)V"
+        ),
+        index = 1
     )
-    private void karmas$prefixNametag(PlayerEntity player, Text text,
-                                      MatrixStack matrices,
-                                      VertexConsumerProvider vertexConsumers,
-                                      int light, CallbackInfo ci) {
-        ci.cancel();
-
+    private Text karmas$modifyNametag(Text text) {
         MutableText prefix = Text.literal("Ka ")
                 .setStyle(Style.EMPTY.withColor(0xB0C4DE));
-        MutableText combined = prefix.append(text.copy());
-
-        net.minecraft.client.MinecraftClient.getInstance()
-                .getEntityRenderDispatcher()
-                .getRenderer(player)
-                .renderLabelIfPresent(player, combined, matrices, vertexConsumers, light);
+        return prefix.append(text.copy());
     }
 }
